@@ -1,0 +1,6 @@
+.DC_Store
+.Python
+bin/
+include/
+lib/
+src/db.sqlite3
