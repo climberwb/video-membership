@@ -16,6 +16,12 @@
 {% block content%}
  <h1>HELLO!! {{numbers}}</h1>
  {% for video in videos %}
-   <div>{{video.title}}</video>
+   <h3>{{video.title}} {{forloop.counter}}</h3>
+   {{video.embed_code | safe}}
   {% endfor %}
+  
+  <h2>Video Embeds</h2>
+  {% for embed in embeds %}
+      {{embed}}
+  {%endfor%}
 {% endblock%}
