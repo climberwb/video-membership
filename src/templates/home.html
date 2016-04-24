@@ -1,0 +1,21 @@
+{% extends "base.html"%}
+{%block title%} Welcome! {%endblock%}
+
+{% block style %}
+    <style>
+    body {
+      min-height: 2000px;
+    }
+    
+    .navbar-static-top {
+      margin-bottom: 19px;
+    }
+    </style>
+{% endblock %}
+
+{% block content%}
+ <h1>HELLO!! {{numbers}}</h1>
+ {% for video in videos %}
+   <div>{{video.title}}</video>
+  {% endfor %}
+{% endblock%}
