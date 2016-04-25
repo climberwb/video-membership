@@ -129,6 +129,8 @@ STATICFILES_DIRS = [
 # use cdn like amazon webservices
 STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static","static_root")
 
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
+
 
 
 
