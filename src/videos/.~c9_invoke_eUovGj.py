@@ -1,20 +1,17 @@
 from django.shortcuts import render, Http404
 from .models import Video,Category
-from django.contrib.auth.decorators import login_required
-
 
 # Create your views here.
 
 
-@login_required 
-def video_detail(request,cat_slug,vid_slug):
-    print(vid_slug)
+
+def video_detail(request,cat_slug,id):
     try:
         cat = Category.objects.get(slug=cat_slug)
     except:
         raise Http404
     try:
-        obj  = Video.objects.get(slug=vid_slug)
+        obj  = Video.objects.get(id=id)
         context = {
             "object":obj
         }
@@ -23,37 +20,27 @@ def video_detail(request,cat_slug,vid_slug):
         raise Http404 
     
     
+    
 def category_list(request):
     queryset = Category.objects.all()
-    print(queryset[0].title)
     context = {
         "queryset":queryset
     }
-    return render(request, "videos/category_list.html",context)
-   
-@login_required 
+    return render(request, "videos/video_single.html",context)
+    
 def category_detail(request,cat_slug):
-    try:
+    queryset = Vidoe.objects.all()
         cat = Category.objects.get(slug=cat_slug)
-        queryset = cat.video_set.all()
-        context = {
-            "object":cat,
-            "queryset":queryset
-            }
-        ## TODO left at 10:43 
-       
     except:
         raise Http404
-    return render(request, "videos/category_detail.html",context)
-        
+    
     
 def video_list(request):
     queryset = Video.objects.all()
-    print('queryset')
     context = {
         "queryset":queryset
     }
-    return render(request, "videos/video_list.html",context)
+    return render(request, "videos/video_single.html",context)
     
     
 

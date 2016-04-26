@@ -19,8 +19,9 @@ from django.contrib import admin
 urlpatterns = patterns('',
         url(r'^$','video_membership.views.home', name='home'),
         url(r'^admin/', admin.site.urls),
-        url(r'^videos', 'videos.views.video_list',name='video_list'),
-        url(r'^videos/(?P<id>\d+)/$', 'videos.views.video_detail',name='video_detail')
+        url(r'^videos/$', 'videos.views.category_list',name='category_list'),
+        url(r'^videos/(?P<cat_slug>[\w-]+)/$', 'videos.views.category_detail',name='category_detail'),
+        url(r'^videos/(?P<cat_slug>[\w-]+)/(?P<vid_slug>[\w-]+)/$', 'videos.views.video_detail',name='video_detail')
 )
 
 urlpatterns +=patterns('video_membership.views',

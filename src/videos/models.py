@@ -28,18 +28,22 @@ class Video(models.Model):
     active = models.BooleanField(default=True)
     featured = models.BooleanField(default=False)
     free_preview = models.BooleanField(default=False)
-    category = models.ForeignKey("Category", null=True)
+    category = models.ForeignKey("Category", default=1)
+    slug = models.SlugField(null=True,blank=True)
     timestamp = models.DateTimeField(auto_now_add=True, auto_now=False, null=True)
     updated = models.DateTimeField(auto_now_add=False, auto_now=True, null=True)
     
     objects = VideoManager()
     
+    class Meta:
+        unique_together=('slug','category')
+        
     def __unicode__(self):
         return self.title
     
     def get_absolute_url(self):
-        return reverse('video_detail', kwargs={'id':self.id})
-        
+        return reverse('video_detail', kwargs={'cat_slug':self.category.slug,'vid_slug':self.slug})
+
 class Category(models.Model):
     title = models.CharField(max_length=120)
     # videos = models.ManyToManyField(Video, null=True, blank=True)
@@ -47,12 +51,16 @@ class Category(models.Model):
     image = models.ImageField(upload_to="/images", null=True, blank=True)
     active = models.BooleanField(default=True)
     featured = models.BooleanField(default=False)
+    slug = models.SlugField(default="abc",unique=True)
     timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
     
     def __unicode__(self):
         return self.title
     
+    def get_absolute_url(self):
+        return reverse('category_detail', kwargs={'cat_slug':self.slug})
+
    
         
         

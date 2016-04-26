@@ -4,8 +4,7 @@
 
 
 {% block content%}
-    {% for item in queryset %}
-        {{item}}<br />
-        {{item.get_absolute_url}}
+    {% for cat in queryset%}
+        {{cat.title}}
     {% endfor %}
 {% endblock%}
