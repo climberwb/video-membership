@@ -5,13 +5,13 @@ from .models import Video, Category
 
 class VideoAdmin(admin.ModelAdmin):
     list_display = ["__unicode__","slug"]
-    fields=['title','embed_code',"slug",
+    fields=['title','embed_code',
     "active",
     "featured",
     "free_preview"]
     
-    prepopulated_fields = {"slug":["title"],
-                            "embed_code":["title"]}
+    # prepopulated_fields = {
+    #                         "embed_code":["title"]}
     class Meta:
         model = Video
         
