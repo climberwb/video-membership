@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+FULL_DOMAIN_NAME_LOCAL=" https://video-membership-climberwb.c9users.io"
 # Application definition
 
 INSTALLED_APPS = [
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'videos',
+    'accounts'
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -131,6 +132,7 @@ STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static","static_root")
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
 
+# AUTH_USER_MODEL = 'accounts.MyUser'
 
 
 

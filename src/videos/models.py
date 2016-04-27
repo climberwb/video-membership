@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
-
-
+import urllib2
 from django.core.urlresolvers import reverse
+from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_save
 from django.utils.text import slugify
@@ -23,10 +23,16 @@ class VideoManager(models.Manager):
     def all(self):
         return self.get_queryset().active()
 
+
+DEFAULT_MESSAGE = """
+Check out this awesome video. 
+"""
+
 # Create your models here.
 class Video(models.Model):
     title = models.CharField(max_length=120)
     embed_code = models.CharField(max_length=500, null=True, blank=True)
+    share_message = models.TextField(default=DEFAULT_MESSAGE)
     active = models.BooleanField(default=True)
     featured = models.BooleanField(default=False)
     free_preview = models.BooleanField(default=False)
@@ -45,9 +51,14 @@ class Video(models.Model):
     
     def get_absolute_url(self):
         return reverse('video_detail', kwargs={'cat_slug':self.category.slug,'vid_slug':self.slug})
+    
+    def get_share_message(self):
+        full_url = "%s%s" %(settings.FULL_DOMAIN_NAME_LOCAL, self.get_absolute_url())
+        print(full_url)
+        # url_with_message = "%s%s" %( self.share_message(), full_url)
+        return urllib2.quote("%s %s" %( self.share_message, full_url))
 
 
-# TODO go back to signals 17:00
 def video_signal_post_save_receiver(sender,instance,created, *args,**kwargs):
     print("signal sent")
     if created:

@@ -1,8 +1,41 @@
 {% extends "base.html"%}
 {%block title%} {%endblock%}
 
+<script>
+    {% block jquery %}
+        function update_iframe_size(){
+            $("iframe").css("width","100%");
+            $("iframe").css("height","500px");
+     
+            var parent_width = $("#main_video iframe").parent.width() * 0.95;
+            var parent_class = $("#main_video iframe").parent().atr("class");
+            
+            var width = $('#main_video iframe').css("width");
+            var height = $('#main_video iframe').css("height");
+            var ratio = parseInt(height)/parseInt(width);
+            var new_height = parseInt(parent_width)* ratio;
+            $("iframe").css("#main_video width",parent_width);
+            $("iframe").css("#main_video height", new_height);
+            
+        }
+        update_iframe_size();
+        
+        $(window).bind("resize",function(){
+            update_iframe_size();
+        })
+    {% endblock %}
+</script>
 
 
 {% block content%}
+<div class='col-sm-10 col-offset-2' id='main_video'>
     {{ object.embed_code | safe }}
+</div>
+    
+    <br />
+    <a href="https://twitter.com/home?status= {{object.get_share_message | safe}}"><i class="fa fa-twitter" aria-hidden="true"></i>
+
+Share on Twitter
+</a>
+   
 {% endblock%}

@@ -5,7 +5,7 @@ from .models import Video, Category
 
 class VideoAdmin(admin.ModelAdmin):
     list_display = ["__unicode__","slug"]
-    fields=['title','embed_code',
+    fields=['title','embed_code','slug',"category",
     "active",
     "featured",
     "free_preview"]

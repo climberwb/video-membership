@@ -8,19 +8,23 @@ from django.contrib.auth.decorators import login_required
 
 @login_required 
 def video_detail(request,cat_slug,vid_slug):
-    print(vid_slug)
+   
     try:
         cat = Category.objects.get(slug=cat_slug)
+        print(cat)
     except:
+        print("cannot find category")
         raise Http404
     try:
         obj  = Video.objects.get(slug=vid_slug)
+        print(obj)
         context = {
             "object":obj
         }
-        return render(request, "videos/video_detail.html",context)
+        # return render(request, "videos/video_detail.html",context)
     except:
         raise Http404 
+    return render(request, "videos/video_detail.html",context)
     
     
 def category_list(request):
