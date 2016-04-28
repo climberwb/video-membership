@@ -4,7 +4,7 @@
 
 
 {% block content%}
-    {% for cat in queryset%}
-        {{cat.title}}
+    {% for item in queryset%}
+        <a href="{{ item.get_absolute_url }}">{{item.title}}</a>
     {% endfor %}
 {% endblock%}

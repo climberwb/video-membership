@@ -28,14 +28,31 @@
 
 
 {% block content%}
-<div class='col-sm-10 col-offset-2' id='main_video'>
-    {{ object.embed_code | safe }}
-</div>
+<div class="row">
+    <div class='col-sm-10 col-offset-2' id='main_video'>
+        {{ object.embed_code | safe }}
+    </div>
     
     <br />
     <a href="https://twitter.com/home?status= {{object.get_share_message | safe}}"><i class="fa fa-twitter" aria-hidden="true"></i>
 
 Share on Twitter
 </a>
+</div>
+<br/>
+<hr/>
+<form method="POST" action=".">{% csrf_token%}
+    {{comment_form.as_p}} 
+    <input value="add comment" type="submit">
+</form>
+</form>
+<div class="row">
+    <div class='col-sm-12'>
+    {% for comment in comments%}
+        <div>{{comment.text}}</div>
+    {% endfor %}
+    </div>
+<div>
+</div>
    
 {% endblock%}
