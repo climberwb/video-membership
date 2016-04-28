@@ -24,7 +24,7 @@ urlpatterns = patterns('',
         url(r'^videos/(?P<cat_slug>[\w-]+)/(?P<vid_slug>[\w-]+)/$', 'videos.views.video_detail',name='video_detail')
 )
 
-urlpatterns +=patterns('video_membership.views',
+urlpatterns +=patterns('accounts.views',
     url(r'^login$', 'auth_login', name='login'),
     url(r'^logout$', 'auth_logout', name='logout'),
 )

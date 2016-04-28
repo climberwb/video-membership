@@ -1,22 +1,39 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, HttpResponseRedirect
-from videos.models import Video
+from django.shortcuts import render, HttpResponseRedirect, redirect
 from django.utils.safestring import mark_safe
+
+
+
+from accounts.forms import RegistrationForm
+from accounts.models import MyUser
+from videos.models import Video
+
 from .forms import LoginForm
+
 
 @login_required(login_url='/login')
 def home(request):
-    videos = Video.objects.all()
+    form =  RegistrationForm(request.POST or None)
+    if form.is_valid():
+        username = form.cleaned_data['username']
+        email = form.cleaned_data['email']
+        password = form.cleaned_data['password2']
+        MyUser.objects.create_user(username=username, email=email, password=password)
+        return redirect('login')
+    # videos = Video.objects.all()
     
-    embeds = ["%s" %(mark_safe(vid.embed_code))for vid in videos]
+    # embeds = ["%s" %(mark_safe(vid.embed_code))for vid in videos]
         
     context={
-        "videos":videos,
-       "numbers": videos.count(),
-       "embeds":embeds
+        "form": form,
+        "action_value":"/",
+        "submit_btn_value":"register"
+    #     "videos":videos,
+    #   "numbers": videos.count(),
+    #   "embeds":embeds
     }
-    return render(request,"home.html",context)
+    return render(request,"form.html",context)
     
 
 # @login_required(login_url='/enroll/login')

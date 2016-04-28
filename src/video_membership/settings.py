@@ -54,6 +54,14 @@ MIDDLEWARE_CLASSES = [
 
 ROOT_URLCONF = 'video_membership.urls'
 
+TEMPLATE_CONTEXT_PROCESSORS = ["django.contrib.auth.context_processors.auth",
+"django.template.context_processors.debug",
+"django.template.context_processors.i18n",
+"django.template.context_processors.media",
+"django.template.context_processors.static",
+"django.template.context_processors.tz",
+"django.contrib.messages.context_processors.messages"]
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -132,7 +140,7 @@ STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static","static_root")
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
 
-# AUTH_USER_MODEL = 'accounts.MyUser'
+AUTH_USER_MODEL = 'accounts.MyUser'
 
 
 

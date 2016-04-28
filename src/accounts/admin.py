@@ -3,7 +3,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
-from .models import MyUser
+from .models import MyUser, UserProfile
 
 from .forms import UserChangeForm, UserCreationForm
 # Register your models here.
@@ -15,11 +15,11 @@ class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('email', 'username', 'is_admin','is_member')
-    list_filter = ('is_admin',)
+    list_display = ('email', 'is_admin','is_member')
+    list_filter = ('is_admin','is_member')
     fieldsets = (
-        (None, {'fields': ('email', 'password')}),
-        ('Personal info', {'fields': ('First_name','Last_name')}),
+        (None, {'fields': ('username','password')}),
+        ('Personal info', {'fields': ('first_name','last_name')}),
         ('Permissions', {'fields': ('is_admin','is_member')}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
@@ -27,7 +27,7 @@ class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'password1', 'password2')}
+            'fields': ('email', 'username','password1', 'password2','first_name','last_name')}
         ),
     )
     search_fields = ('email','username','first_name','last_name')
@@ -36,6 +36,7 @@ class UserAdmin(BaseUserAdmin):
 
 # Now register the new UserAdmin...
 admin.site.register(MyUser, UserAdmin)
+admin.site.register(UserProfile)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 admin.site.unregister(Group)

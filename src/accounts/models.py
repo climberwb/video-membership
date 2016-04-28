@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser
 )
+from django.db.models.signals import post_save
 
 
 # Create your models here.
@@ -45,7 +46,7 @@ class MyUserManager(BaseUserManager):
 
 class MyUser(AbstractBaseUser):
     username = models.CharField(
-        verbose_name='email address',
+        verbose_name='user name',
         max_length=255,
         unique=True,
     )
@@ -60,6 +61,7 @@ class MyUser(AbstractBaseUser):
             max_length=120,
             null=True,
             blank=True)
+            
     last_name = models.CharField(
             max_length=120,
             null=True,
@@ -103,3 +105,29 @@ class MyUser(AbstractBaseUser):
         "Is the user a member of staff?"
         # Simplest possible answer: All admins are staff
         return self.is_admin
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(MyUser)
+    bio = models.TextField(null=True, blank=True)
+    
+    facebook_link=models.CharField(max_length=320, 
+            null=True, 
+            blank=True,
+            verbose_name="Facebook profile url")
+    
+    def __unicode__(self):
+        return self.user.username
+        
+    def __str__(self):
+        return self.user.username
+        
+def new_user_receiver(sender,instance,created,*args, **kwargs):
+    if created:
+        new_profile, is_created = UserProfile.objects.get_or_create(user=instance)
+        print new_profile, is_created
+        
+        #
+        # merchant account customer id -- stripe vs braintree
+        # sendd email for verifying user email
+    
+post_save.connect(new_user_receiver, sender=MyUser)
