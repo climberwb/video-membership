@@ -5,7 +5,12 @@ from accounts.models import MyUser
 from videos.models import Video
 
 class CommentManager(models.Manager):
-    def create_comment(self,user=None,path=None,text=None,video=None):
+    def all(self):
+        return super(CommentManager,self).filter(active=True).filter(parent=None)
+        
+        
+
+    def create_comment(self,user=None, path=None,text=None,video=None,parent=None):
         """
         Creates and saves a comment to a video
         """
@@ -14,11 +19,13 @@ class CommentManager(models.Manager):
             
         if not user:
             raise ValueError('Must include user when adding comment')
+        
             
         comment = self.model(
             user=user,
             path=path,
-            text=text
+            text=text,
+            parent=parent
         )
         
         if video is not None:
@@ -31,6 +38,7 @@ class CommentManager(models.Manager):
 # Create your models here.
 class Comment(models.Model):
     user = models.ForeignKey(MyUser, null=True, blank=True)
+    parent = models.ForeignKey("self",null=True, blank=True)
     text = models.TextField()
     video = models.ForeignKey(Video)
     path = models.CharField(max_length=350)
@@ -39,8 +47,25 @@ class Comment(models.Model):
     active = models.BooleanField(default=True)
     
     objects = CommentManager()
+    
+    class Meta:
+        ordering=['-timestamp']
+    
     def __unicode__(self):
         return self.user.username
         
     def __str__(self):
         return self.user.username
+    
+    @property
+    def is_child(self):
+        if self.parent is not None:
+            return True
+        else:
+            return False
+    
+    def get_children(self):
+        if self.is_child:
+            return None
+        else:
+            return Comment.objects.filter(parent=self)

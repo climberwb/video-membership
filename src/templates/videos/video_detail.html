@@ -41,18 +41,36 @@ Share on Twitter
 </div>
 <br/>
 <hr/>
-<form method="POST" action=".">{% csrf_token%}
-    {{comment_form.as_p}} 
-    <input value="add comment" type="submit">
-</form>
-</form>
 <div class="row">
     <div class='col-sm-12'>
-    {% for comment in comments%}
-        <div>{{comment.text}}</div>
-    {% endfor %}
+        <form method="POST" action=".">{% csrf_token%}
+            {{comment_form.as_p}} 
+            <input value="add comment" type="submit">
+        </form>
+        
+            
+        <table class="table">
+        
+            {% for comment in comments %}
+               <tr><td>{{comment.text}} <small>via {{comment.user.username}} | {{comment.timestamp|timesince }}{%if not comment.is_child%}</small>
+                                                <form method="POST" action="">{% csrf_token%}
+                                                    {{comment_form.as_p}} 
+                                                    <input type='hidden' name="parent_id" value="{{comment.id}}">
+                                                    <input value="add comment" type="submit">
+                                                </form>
+                                        
+                                        <ul>
+                                            {% for child in comment.get_children%}
+                                                <li>{{child.text}} <small>via {{child.user}}</small></li>
+                                                 
+                                            {% endfor %}
+                                        </ul>
+                                        {% endif %}
+                </td></tr>
+            {% endfor %}
+        </table>
     </div>
-<div>
+    <div>
 </div>
    
 {% endblock%}

@@ -7,5 +7,6 @@ from .models import Comment
 #         model = Comment
 #         fields = ('user','path','text')
 class CommentForm(forms.Form):
-    comment = forms.CharField(widget=forms.Textarea)
+    comment = forms.CharField(widget=forms.Textarea
+                               )
         
