@@ -5,7 +5,7 @@ from accounts.models import MyUser
 from videos.models import Video
 
 class CommentManager(models.Manager):
-    def create_comment(self,user=None,path=None,comment=None,video=None):
+    def create_comment(self,user=None,path=None,text=None,video=None):
         """
         Creates and saves a comment to a video
         """
@@ -15,12 +15,10 @@ class CommentManager(models.Manager):
         if not user:
             raise ValueError('Must include user when adding comment')
             
-        if video is not None:
-            comment.video = video
         comment = self.model(
             user=user,
             path=path,
-            comment=comment
+            text=text
         )
         
         if video is not None:

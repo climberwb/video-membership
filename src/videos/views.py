@@ -1,3 +1,4 @@
+
 from django.shortcuts import render, Http404
 from .models import Video,Category
 from django.contrib.auth.decorators import login_required
@@ -64,33 +65,23 @@ def video_detail(request,cat_slug,vid_slug):
     try:
         obj  = Video.objects.get(slug=vid_slug)
         comments = Comment.objects.filter(video=obj)
-        # comment_form = CommentForm(request.POST or None)
-        # if comment_form.is_valid():
-        #     obj_instance = comment_form.save(commit=False)
-        #     obj_instance.path = request.get_full_path()
-        #     obj_instance.user = request.user
-        #     obj_instance.text = request.text
-        #     obj_instance.video = obj
-        #     obj_instance.save()
         
-        #     # print('poop',comments)
-        # context = {
-        #     "object":obj,
-        #     "comments":comments,
-        #     "comment_form":comment_form
-        # }
-        # return render(request, "videos/video_detail.html",context)
+        
+        comment_form = CommentForm(request.POST or None)
+        if comment_form.is_valid():
+            comment_text = comment_form.cleaned_data['comment']
+            new_comment = Comment.objects.create_comment(
+                            user=request.user, 
+                            path=request.get_full_path(),
+                            text=comment_text,
+                            video = obj)
+            print(new_comment.text)
+        ## TODO Render comment thread
     except:
         raise Http404 
-    comment_form = CommentForm(request.POST or None)
-
-    if comment_form.is_valid():
-            obj_instance = comment_form.save(commit=False)
-            obj_instance.path = request.get_full_path()
-            obj_instance.user = request.user
-            # obj_instance.text = request.text
-            obj_instance.video = obj
-            obj_instance.save()
+    
+    
+       
         
             # print('poop',comments)
     context = {
@@ -134,11 +125,3 @@ def video_list(request):
     return render(request, "videos/video_list.html",context)
     
     
-
-
-
-# def video_edit(request):
-#     return render(request, "videos/video_single.html",{})
-
-# def video_create(request):
-#     return render(request, "videos/video_single.html",{})
