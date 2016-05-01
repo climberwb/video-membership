@@ -12,7 +12,7 @@ from videos.models import Video
 from .forms import LoginForm
 
 
-@login_required(login_url='/login')
+@login_required(login_url='accounts/login/')
 def home(request):
     form =  RegistrationForm(request.POST or None)
     if form.is_valid():
