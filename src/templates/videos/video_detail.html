@@ -52,7 +52,11 @@ Share on Twitter
         <table class="table">
         
             {% for comment in comments %}
-               <tr><td>{{comment.text}} <small>via {{comment.user.username}} | {{comment.timestamp|timesince }}{%if not comment.is_child%}</small>
+                
+                   
+                
+               {%if not comment.is_child%}
+               <tr><td>{{comment.text}} <small>via {{comment.user.username}} | {{comment.timestamp|timesince }}</small>
                                                 <form method="POST" action="">{% csrf_token%}
                                                     {{comment_form.as_p}} 
                                                     <input type='hidden' name="parent_id" value="{{comment.id}}">
@@ -65,8 +69,10 @@ Share on Twitter
                                                  
                                             {% endfor %}
                                         </ul>
-                                        {% endif %}
+                                        
+                                   
                 </td></tr>
+                {% endif %}
             {% endfor %}
         </table>
     </div>
