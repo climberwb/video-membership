@@ -25,6 +25,6 @@ urlpatterns = patterns('',
 )
 
 urlpatterns +=patterns('accounts.views',
-    url(r'^login$', 'auth_login', name='login'),
-    url(r'^logout$', 'auth_logout', name='logout'),
+    url(r'^accounts/login/$', 'auth_login', name='login'),
+    url(r'^accounts/logout/$', 'auth_logout', name='logout'),
 )
