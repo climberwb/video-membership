@@ -77,21 +77,22 @@ Share on Twitter
                {%if not comment.is_child%}
               
                <tr><td>{{comment.text}} <small>via {{comment.user.username}} | {{comment.timestamp|timesince }}</small>
-                                                   <a href="#" class="reply_btn">Reply</a>
-                                                   <div class='reply_comment'>
+                                                 
+                                        <ul>
+                                            {% for child in comment.get_children%}
+                                                <li>{{child.text}} <small>via {{child.user}}</small></li>
+                                                 
+                                            {% endfor %}
+                                             
+                                        </ul>
+                                        <br/> <a href="#" class="reply_btn">Reply</a> | <a href="{{comment.get_absolute_url}}" class="">View Thread</a>
+                                        <div class='reply_comment'>
                                                         <form method="POST" action="">{% csrf_token%}
                                                             {{comment_form.as_p}} 
                                                             <input type='hidden' name="parent_id" value="{{comment.id}}">
                                                             <input class="btn btn-default" value="add comment" type="submit">
                                                         </form>
                                                     </div>
-                                        
-                                        <ul>
-                                            {% for child in comment.get_children%}
-                                                <li>{{child.text}} <small>via {{child.user}}</small></li>
-                                                 
-                                            {% endfor %}
-                                        </ul>
                                         
                                    
                 </td></tr>

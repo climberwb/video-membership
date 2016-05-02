@@ -21,10 +21,18 @@ urlpatterns = patterns('',
         url(r'^admin/', admin.site.urls),
         url(r'^videos/$', 'videos.views.category_list',name='category_list'),
         url(r'^videos/(?P<cat_slug>[\w-]+)/$', 'videos.views.category_detail',name='category_detail'),
-        url(r'^videos/(?P<cat_slug>[\w-]+)/(?P<vid_slug>[\w-]+)/$', 'videos.views.video_detail',name='video_detail')
+        url(r'^videos/(?P<cat_slug>[\w-]+)/(?P<vid_slug>[\w-]+)/$', 'videos.views.video_detail',name='video_detail'),
+        
 )
 
 urlpatterns +=patterns('accounts.views',
     url(r'^accounts/login/$', 'auth_login', name='login'),
     url(r'^accounts/logout/$', 'auth_logout', name='logout'),
+)
+
+#Comment Thread
+urlpatterns +=patterns('comments.views',
+    url(r'^comments/(?P<id>\d+)$','comment_thread', name='comment_thread'),
+    url(r'^comments/create/$','comment_create', name='comment_create')
+
 )

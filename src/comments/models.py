@@ -1,8 +1,12 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.core.urlresolvers import reverse
+
 from accounts.models import MyUser
 from videos.models import Video
+
+
 
 class CommentManager(models.Manager):
     def all(self):
@@ -56,6 +60,13 @@ class Comment(models.Model):
         
     def __str__(self):
         return self.user.username
+    
+    def get_absolute_url(self):
+        return reverse('comment_thread', kwargs={'id':self.id})
+    
+    @property
+    def get_origin(self):
+        return self.path
     
     @property
     def is_child(self):

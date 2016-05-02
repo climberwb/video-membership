@@ -99,7 +99,6 @@ class Category(models.Model):
         return self.title
     
     def get_absolute_url(self):
-        print(self.slug, "hello")
         return reverse('category_detail', kwargs={'cat_slug':self.slug})
 
    

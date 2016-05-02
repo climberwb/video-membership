@@ -1,0 +1,85 @@
+{% extends "base.html"%}
+{%block title%} {%endblock%}
+
+{%block style%} 
+   
+{% endblock %}
+
+
+{%block jquery%} 
+   
+{% endblock %}
+
+
+
+{% block content%}
+    <a href="{{parent_comment.get_origin}}">Go Back</a>
+    <table class="table"><tr><td>{{parent_comment.text}} <small>via {{parent_comment.user.username}} | {{parent_comment.timestamp|timesince }}</td>
+        {% for child in child_comments%}
+        <tr><td>{{child.text}} <small>via {{child.user.username}} | {{child.timestamp|timesince }}</small>
+                </td></tr>
+    {% endfor %}
+    </table>
+    <form method="POST" action="{% url 'comment_create'%}">{% csrf_token%}
+        {{comment_form.as_p}} 
+        <input type='hidden' name="parent_id" value="{{parent_comment.id}}">
+        <input class="btn btn-default" value="add comment" type="submit">
+    </form>
+ 
+<!--<div class="row">-->
+<!--    <div class='col-sm-10 col-offset-2' id='main_video'>-->
+<!--        {{ object.embed_code | safe }}-->
+<!--    </div>-->
+    
+<!--    <br />-->
+<!--    <a href="https://twitter.com/home?status= {{object.get_share_message | safe}}"><i class="fa fa-twitter" aria-hidden="true"></i>-->
+
+<!--Share on Twitter-->
+<!--</a>-->
+<!--</div>-->
+<!--<br/>-->
+<!--<hr/>-->
+<!--<div class="row">-->
+<!--    <div class='col-sm-12'>-->
+<!--        <form method="POST" action=".">{% csrf_token%}-->
+<!--            {{comment_form.as_p}} -->
+<!--            <input value="add comment" type="submit">-->
+<!--        </form>-->
+        
+            
+<!--        <table class="table">-->
+        
+<!--            {% for comment in comments %}-->
+                
+                   
+                
+<!--               {%if not comment.is_child%}-->
+              
+<!--               <tr><td>{{comment.text}} <small>via {{comment.user.username}} | {{comment.timestamp|timesince }}</small>-->
+                                                 
+<!--                                        <ul>-->
+<!--                                            {% for child in comment.get_children%}-->
+<!--                                                <li>{{child.text}} <small>via {{child.user}}</small></li>-->
+                                                 
+<!--                                            {% endfor %}-->
+                                             
+<!--                                        </ul>-->
+<!--                                        <br/> <a href="#" class="reply_btn">Reply</a> | <a href="#" class="">View Thread</a>-->
+<!--                                        <div class='reply_comment'>-->
+<!--                                                        <form method="POST" action="">{% csrf_token%}-->
+<!--                                                            {{comment_form.as_p}} -->
+<!--                                                            <input type='hidden' name="parent_id" value="{{comment.id}}">-->
+<!--                                                            <input class="btn btn-default" value="add comment" type="submit">-->
+<!--                                                        </form>-->
+<!--                                                    </div>-->
+                                        
+                                   
+<!--                </td></tr>-->
+<!--                {% endif %}-->
+<!--            {% endfor %}-->
+<!--        </table>-->
+<!--    </div>-->
+<!--    <div>-->
+<!--</div>-->
+   
+{% endblock%}

@@ -66,7 +66,6 @@ def video_detail(request,cat_slug,vid_slug):
         obj  = Video.objects.get(slug=vid_slug)
         comments = Comment.objects.filter(video=obj)
         
-        
         comment_form = CommentForm(request.POST or None)
         
         if comment_form.is_valid():
