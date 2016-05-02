@@ -1,30 +1,49 @@
 {% extends "base.html"%}
 {%block title%} {%endblock%}
 
-<script>
-    {% block jquery %}
-        function update_iframe_size(){
-            $("iframe").css("width","100%");
-            $("iframe").css("height","500px");
-     
-            var parent_width = $("#main_video iframe").parent.width() * 0.95;
-            var parent_class = $("#main_video iframe").parent().atr("class");
-            
-            var width = $('#main_video iframe').css("width");
-            var height = $('#main_video iframe').css("height");
-            var ratio = parseInt(height)/parseInt(width);
-            var new_height = parseInt(parent_width)* ratio;
-            $("iframe").css("#main_video width",parent_width);
-            $("iframe").css("#main_video height", new_height);
-            
-        }
-        update_iframe_size();
-        
-        $(window).bind("resize",function(){
+{%block style%} 
+    <style>
+      .reply_comment{
+          display: none;
+      }
+    </style>
+{% endblock %}
+
+
+    {%block jquery%} 
+        <script>
+          $(document).ready(function(){
+            function update_iframe_size(){
+                $("iframe").css("width","100%");
+                $("iframe").css("height","500px");
+         
+                var parent_width =  $("#main_video iframe").parent().width() * 0.95;
+                                    
+                var parent_class =  $("#main_video iframe").parent().attr("class");
+                              
+                
+                var width = $('#main_video iframe').css("width");
+                var height = $('#main_video iframe').css("height");
+                var ratio = parseInt(height)/parseInt(width);
+                var new_height = parseInt(parent_width)* ratio;
+                $("iframe").css("#main_video width",parent_width);
+                $("iframe").css("#main_video height", new_height);
+                
+            }
             update_iframe_size();
-        })
+            
+            $(window).bind("resize",function(){
+                update_iframe_size();
+            })
+            
+            $('.reply_btn').click(function(e){
+                e.preventDefault();
+                $(this).next(".reply_comment").fadeToggle();
+            });
+          });
+        </script>
     {% endblock %}
-</script>
+
 
 
 {% block content%}
@@ -56,12 +75,16 @@ Share on Twitter
                    
                 
                {%if not comment.is_child%}
+              
                <tr><td>{{comment.text}} <small>via {{comment.user.username}} | {{comment.timestamp|timesince }}</small>
-                                                <form method="POST" action="">{% csrf_token%}
-                                                    {{comment_form.as_p}} 
-                                                    <input type='hidden' name="parent_id" value="{{comment.id}}">
-                                                    <input value="add comment" type="submit">
-                                                </form>
+                                                   <a href="#" class="reply_btn">Reply</a>
+                                                   <div class='reply_comment'>
+                                                        <form method="POST" action="">{% csrf_token%}
+                                                            {{comment_form.as_p}} 
+                                                            <input type='hidden' name="parent_id" value="{{comment.id}}">
+                                                            <input class="btn btn-default" value="add comment" type="submit">
+                                                        </form>
+                                                    </div>
                                         
                                         <ul>
                                             {% for child in comment.get_children%}
