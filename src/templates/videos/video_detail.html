@@ -3,20 +3,20 @@
 
 {%block style%} 
     <style>
-      .reply_comment{
-          display: none;
-      }
+        .reply_comment{
+        display: none;
+        }
     </style>
 {% endblock %}
 
 
-    {%block jquery%} 
-        <script>
-          $(document).ready(function(){
+{%block jquery%} 
+    <script>
+        $(document).ready(function(){
             function update_iframe_size(){
                 $("iframe").css("width","100%");
                 $("iframe").css("height","500px");
-         
+            
                 var parent_width =  $("#main_video iframe").parent().width() * 0.95;
                                     
                 var parent_class =  $("#main_video iframe").parent().attr("class");
@@ -31,18 +31,18 @@
                 
             }
             update_iframe_size();
-            
+        
             $(window).bind("resize",function(){
                 update_iframe_size();
             })
-            
+        
             $('.reply_btn').click(function(e){
                 e.preventDefault();
-                $(this).next(".reply_comment").fadeToggle();
+                $(this).next().next(".reply_comment").fadeToggle();
             });
-          });
-        </script>
-    {% endblock %}
+        });
+    </script>
+{% endblock %}
 
 
 
@@ -62,8 +62,9 @@ Share on Twitter
 <hr/>
 <div class="row">
     <div class='col-sm-12'>
-        <form method="POST" action=".">{% csrf_token%}
+        <form method="POST" action="{% url 'comment_create'%}">{% csrf_token%}
             {{comment_form.as_p}} 
+            <input type='hidden' name="origin_path" value="{{request.get_full_path}}">
             <input value="add comment" type="submit">
         </form>
         
@@ -87,8 +88,9 @@ Share on Twitter
                                         </ul>
                                         <br/> <a href="#" class="reply_btn">Reply</a> | <a href="{{comment.get_absolute_url}}" class="">View Thread</a>
                                         <div class='reply_comment'>
-                                                        <form method="POST" action="">{% csrf_token%}
+                                                        <form method="POST" action="{% url 'comment_create'%}">{% csrf_token%}
                                                             {{comment_form.as_p}} 
+                                                            <input type='hidden' name="origin_path" value="{{request.get_full_path}}">
                                                             <input type='hidden' name="parent_id" value="{{comment.id}}">
                                                             <input class="btn btn-default" value="add comment" type="submit">
                                                         </form>

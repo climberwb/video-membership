@@ -74,41 +74,42 @@ def video_detail(request,cat_slug,vid_slug):
             parent_id = request.POST.get('parent_id')
             # print(comment_text, parent_id)
             # print(parent_id)
-            if(parent_id is not None):
-                try: 
-                    print('try')
-                    print(parent_id)
-                    parent_comment = Comment.objects.get(id=parent_id)
-                    print(parent_comment)
-                    new_comment = Comment.objects.create_comment(
-                                user=request.user, 
-                                path=request.get_full_path(),
-                                text=comment_text,
-                                video = obj,
-                                parent=parent_comment)
-                    print(new_comment)
-                except:
-                    parent_comment = None
-            else:
-                new_comment = Comment.objects.create_comment(
-                                user=request.user, 
-                                path=request.get_full_path(),
-                                text=comment_text,
-                                video = obj)
+    #         if(parent_id is not None):
+    #             try: 
+    #                 print('try')
+    #                 print(parent_id)
+    #                 parent_comment = Comment.objects.get(id=parent_id)
+    #                 print(parent_comment)
+    #                 new_comment = Comment.objects.create_comment(
+    #                             user=request.user, 
+    #                             path=request.get_full_path(),
+    #                             text=comment_text,
+    #                             video = obj,
+    #                             parent=parent_comment)
+    #                 print(new_comment)
+    #             except:
+    #                 parent_comment = None
+    #         else:
+    #             new_comment = Comment.objects.create_comment(
+    #                             user=request.user, 
+    #                             path=request.get_full_path(),
+    #                             text=comment_text,
+    #                             video = obj)
                
-        ## TODO Render comment thread
+    #     ## TODO Render comment thread
     except:
         # raise Http404 
         pass
     
     
        
-        
-            # print('poop',comments)
+   
+    
     context = {
         "object":obj,
         "comments":comments,
         "comment_form":comment_form
+
     }
     return render(request, "videos/video_detail.html",context)
     

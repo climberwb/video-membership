@@ -43,6 +43,12 @@
 
 
     <div class="container">
+
+       
+          {% for message in storage %}
+            <div class="alert alert-success" role="alert">{{ message }} Tags:{{message.tags}}</div>
+          {% endfor %}
+        
         {% block content %}
         {% endblock %}
 

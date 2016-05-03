@@ -3,10 +3,12 @@ from __future__ import unicode_literals
 from django.db import models
 from django.core.urlresolvers import reverse
 
+from django.contrib import messages
 from accounts.models import MyUser
 from videos.models import Video
 
-
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class CommentManager(models.Manager):
     def all(self):
@@ -80,3 +82,10 @@ class Comment(models.Model):
             return None
         else:
             return Comment.objects.filter(parent=self)
+    
+# signals ######################
+
+## signal that checks if Comment was saved
+@receiver(post_save, sender=Comment)      
+def save_handler(sender, instance, **kwargs):
+    instance.was_saved = True
