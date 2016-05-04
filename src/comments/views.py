@@ -35,9 +35,9 @@ def comment_create(request):
             
         comment_text = form.cleaned_data['comment']
         
-        
-        if(parent_id is not None):
-            try:
+        try:
+            if(parent_id is not None):
+                
                 new_comment = Comment.objects.create_comment(
                                     user = request.user, 
                                     path=parent_comment.get_origin,
@@ -46,16 +46,17 @@ def comment_create(request):
                                     video = video)
                 messages.success(request,"Congrats your commnet was saved ")
                 return HttpResponseRedirect(new_comment.get_origin)
-            except:
-                messages.error(request,"Your comment did not save. Please try again. ")
+            else:
+                new_comment = Comment.objects.create_comment(
+                                    user=request.user, 
+                                    path=video.get_absolute_url(),
+                                    text=comment_text,
+                                    video = video)
+                messages.success(request,"Congrats your commnet was saved ")
+                return HttpResponseRedirect(video.get_absolute_url())
+        except:
+            messages.error(request,"Your comment did not save. Please try again. ")
             return HttpResponseRedirect(origin_path)
-        else:
-            new_comment = Comment.objects.create_comment(
-                                user=request.user, 
-                                path=video.get_absolute_url(),
-                                text=comment_text,
-                                video = video)
-            return HttpResponseRedirect(video.get_absolute_url())
             
             # else:
             #     new_comment = Comment.objects.create_comment(
