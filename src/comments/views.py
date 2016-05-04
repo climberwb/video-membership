@@ -24,6 +24,7 @@ def comment_create(request):
     form = CommentForm(request.POST)
     if form.is_valid() and request.method == "POST" and request.user.is_authenticated():
         origin_path = request.POST.get('origin_path')
+        print(origin_path)
         # fields needed to create child comment
         parent_id = request.POST.get('parent_id')
         if parent_id:

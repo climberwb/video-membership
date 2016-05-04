@@ -63,10 +63,10 @@ Share on Twitter
 <hr/>
 <div class="row">
     <div class='col-sm-12'>
+        <h2>Comments/Questions</h2>
         <form method="POST" action="{% url 'comment_create'%}">{% csrf_token%}
-            {{comment_form|crispy}} 
             <input type='hidden' name="origin_path" value="{{request.get_full_path}}">
-            <input value="add comment" type="submit">
+            {% crispy comment_form comment_form.helper%}
         </form>
         
             
@@ -90,10 +90,10 @@ Share on Twitter
                                         <br/> <a href="#" class="reply_btn">Reply</a> | <a href="{{comment.get_absolute_url}}" class="">View Thread</a>
                                         <div class='reply_comment'>
                                                         <form method="POST" action="{% url 'comment_create'%}">{% csrf_token%}
-                                                            {{comment_form.as_p}} 
                                                             <input type='hidden' name="origin_path" value="{{request.get_full_path}}">
                                                             <input type='hidden' name="parent_id" value="{{comment.id}}">
-                                                            <input class="btn btn-default" value="add comment" type="submit">
+                                                            {% crispy comment_form comment_form.helper%}
+                                                            
                                                         </form>
                                                     </div>
                                         
