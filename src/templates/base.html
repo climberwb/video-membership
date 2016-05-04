@@ -46,7 +46,9 @@
 
        
           {% for message in messages %}
-            <div class="alert alert-success" role="alert">{{ message }} Tags:{{message.tags}}</div>
+              <div class="alert alert-{% if 'error' in message.tags%}warning{%else%}success{%endif%}" role="alert"> {{message.tags}}!:
+              {% if 'safe' in message.tags%}{{message|safe}} {%else%}{{message}}{%endif%}
+              </div>
           {% endfor %}
         
         {% block content %}

@@ -23,6 +23,7 @@
     <form method="POST" action="{% url 'comment_create'%}">{% csrf_token%}
         {{comment_form.as_p}} 
         <input type='hidden' name="parent_id" value="{{parent_comment.id}}">
+        <input type='hidden' name="origin_path" value="{{request.get_full_path}}">
         <input class="btn btn-default" value="add comment" type="submit">
     </form>
  
