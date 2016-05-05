@@ -1,9 +1,11 @@
 
 from django.shortcuts import render, Http404
-from .models import Video,Category
+from .models import Video,Category, TaggedItem
 from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
 from comments.models import Comment
 from comments.forms import CommentForm
+
 # Create your views here.
 
 
@@ -58,53 +60,18 @@ from django.contrib.auth.decorators import login_required
 @login_required 
 def video_detail(request,cat_slug,vid_slug):
     
-    try:
-        cat = Category.objects.get(slug=cat_slug)
-    except:
-        raise Http404
-    try:
-        obj  = Video.objects.get(slug=vid_slug)
-        comments = Comment.objects.filter(video=obj)
-        
-        comment_form = CommentForm(request.POST or None)
-        
-        if comment_form.is_valid():
-            # print('try3')
-            comment_text = comment_form.cleaned_data['comment']
-            parent_id = request.POST.get('parent_id')
-            # print(comment_text, parent_id)
-            # print(parent_id)
-    #         if(parent_id is not None):
-    #             try: 
-    #                 print('try')
-    #                 print(parent_id)
-    #                 parent_comment = Comment.objects.get(id=parent_id)
-    #                 print(parent_comment)
-    #                 new_comment = Comment.objects.create_comment(
-    #                             user=request.user, 
-    #                             path=request.get_full_path(),
-    #                             text=comment_text,
-    #                             video = obj,
-    #                             parent=parent_comment)
-    #                 print(new_comment)
-    #             except:
-    #                 parent_comment = None
-    #         else:
-    #             new_comment = Comment.objects.create_comment(
-    #                             user=request.user, 
-    #                             path=request.get_full_path(),
-    #                             text=comment_text,
-    #                             video = obj)
-               
-    #     ## TODO Render comment thread
-    except:
-        # raise Http404 
-        pass
-    
-    
-       
-   
-    
+    # try:
+    cat = Category.objects.get(slug=cat_slug)
+    obj  = Video.objects.get(slug=vid_slug)
+    comments = Comment.objects.filter(video=obj)
+    content_type = ContentType.objects.get_for_model(obj)
+    tags = TaggedItem.objects.filter(content_type=content_type,object_id=obj.id)
+    print(tags)
+    comment_form = CommentForm()
+    # except:
+    #     raise Http404
+      #  pass
+
     context = {
         "object":obj,
         "comments":comments,

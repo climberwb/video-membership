@@ -6,6 +6,9 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.utils.text import slugify
 
+
+
+
 class VideoQueryset(models.query.QuerySet):
     def active(self):
         return self.filter(active=True)
@@ -102,7 +105,26 @@ class Category(models.Model):
         return reverse('category_detail', kwargs={'cat_slug':self.slug})
 
    
+TAG_CHOICES = (
+        ("python","python"),
+        ("django","django"),
+        ("css","css"),
+        ("bootsrap","bootstrap")
+    )
+
+
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
+class TaggedItem(models.Model):
+    tag = models.SlugField(choices=TAG_CHOICES)
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey()
+    
+    def __unicode__(self):
+        return self.tag
         
-        
+    def __str__(self):
+        return self.tag
     ## TODO go back to https://www.codingforentrepreneurs.com/projects/srvup-membership/models-videos-app/?play=true
     ## 7:05
