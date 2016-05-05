@@ -5,6 +5,7 @@ from videos.models import Video
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
+from notifications.signals import notify
 from .forms import CommentForm
 
 # Create your views here.
@@ -45,6 +46,7 @@ def comment_create(request):
                                     text=comment_text,
                                     parent = parent_comment,
                                     video = video)
+                notify.send(request.user, recipient=parent_comment.user, action="Responded to user")
                 messages.success(request,"Congrats your commnet was saved ")
                 return HttpResponseRedirect(new_comment.get_origin)
             else:
@@ -53,6 +55,7 @@ def comment_create(request):
                                     path=video.get_absolute_url(),
                                     text=comment_text,
                                     video = video)
+                notify.send(request.user, recipient=None, action="Responded to user")
                 messages.success(request,"Congrats your commnet was saved ")
                 return HttpResponseRedirect(video.get_absolute_url())
         except:
