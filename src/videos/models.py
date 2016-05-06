@@ -5,7 +5,8 @@ from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_save
 from django.utils.text import slugify
-
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.models import ContentType
 
 
 
@@ -36,6 +37,7 @@ class Video(models.Model):
     title = models.CharField(max_length=120)
     embed_code = models.CharField(max_length=500, null=True, blank=True)
     share_message = models.TextField(default=DEFAULT_MESSAGE)
+    tags = GenericRelation("TaggedItem", null=True,blank=True)
     active = models.BooleanField(default=True)
     featured = models.BooleanField(default=False)
     free_preview = models.BooleanField(default=False)
@@ -90,6 +92,7 @@ post_save.connect(video_signal_post_save_receiver,sender=Video)
 class Category(models.Model):
     title = models.CharField(max_length=120)
     # videos = models.ManyToManyField(Video, null=True, blank=True)
+    tags = GenericRelation("TaggedItem", null=True,blank=True)
     description = models.TextField(max_length=5000, null=True, blank=True)
     image = models.ImageField(upload_to="/images", null=True, blank=True)
     active = models.BooleanField(default=True)
@@ -113,8 +116,7 @@ TAG_CHOICES = (
     )
 
 
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
+
 class TaggedItem(models.Model):
     tag = models.SlugField(choices=TAG_CHOICES)
     content_type = models.ForeignKey(ContentType)

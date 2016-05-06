@@ -66,7 +66,7 @@ def video_detail(request,cat_slug,vid_slug):
     comments = Comment.objects.filter(video=obj)
     content_type = ContentType.objects.get_for_model(obj)
     tags = TaggedItem.objects.filter(content_type=content_type,object_id=obj.id)
-    print(tags)
+    print(obj.tags.all())
     comment_form = CommentForm()
     # except:
     #     raise Http404
