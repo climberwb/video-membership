@@ -1,4 +1,6 @@
 from __future__ import unicode_literals
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.conf import settings
 from django.db import models
 from .signals import notify
