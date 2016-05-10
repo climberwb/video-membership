@@ -39,14 +39,17 @@ def comment_create(request):
         
         try:
             if(parent_id is not None):
-                
                 new_comment = Comment.objects.create_comment(
                                     user = request.user, 
                                     path=parent_comment.get_origin,
                                     text=comment_text,
                                     parent = parent_comment,
                                     video = video)
-                notify.send(request.user, recipient=parent_comment.user, action="Responded to user")
+                notify.send(request.user,
+                    action=new_comment,
+                    target=parent_comment, 
+                    recipient=parent_comment.user, 
+                    verb="replied to")
                 messages.success(request,"Congrats your commnet was saved ")
                 return HttpResponseRedirect(new_comment.get_origin)
             else:
@@ -55,12 +58,17 @@ def comment_create(request):
                                     path=video.get_absolute_url(),
                                     text=comment_text,
                                     video = video)
-                notify.send(request.user, recipient=None, action="Responded to user")
+                notify.send(request.user, 
+                    action=new_comment,
+                    recipient=request.user,
+                    target = new_comment.video,
+                    verb="commented")
                 messages.success(request,"Congrats your commnet was saved ")
                 return HttpResponseRedirect(video.get_absolute_url())
         except:
             messages.error(request,"Your comment did not save. Please try again. ")
             return HttpResponseRedirect(origin_path)
+        return HttpResponseRedirect(video.get_absolute_url())
             
             # else:
             #     new_comment = Comment.objects.create_comment(
