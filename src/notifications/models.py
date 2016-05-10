@@ -7,6 +7,29 @@ from .signals import notify
 # Create your models here.
 
 
+class NotificationQuerySet(models.query.QuerySet):
+    def get_user(self,user):
+        return self.filter(recipient=user)
+    def unread(self):
+        return self.filter(unread=True)
+        
+    def read(self):
+        return self.filter(read=True)
+        
+
+class NotificationManager(models.Manager):
+    def get_queryset(self):
+        return NotificationQuerySet(self.model, using=self._db)
+        
+    def all_unread(self,user):   
+        return self.get_queryset().get_user(user).unread()
+    
+    def all_read(self,user):   
+        return self.get_queryset().get_user(user).read()
+    
+    def all_for_user(self, user):
+        return self.get_queryset().get_user(user)
+        
 class Notification(models.Model):
     # sender = 
     recipient = models.ForeignKey(settings.AUTH_USER_MODEL,related_name='notifications')
@@ -27,8 +50,25 @@ class Notification(models.Model):
     target_object_id = models.PositiveIntegerField(null=True)
     target_content_object = GenericForeignKey("target_content_type","target_object_id")
     
+    read = models.BooleanField(default=False)
+    unread = models.BooleanField(default=True)
+    
+    objects = NotificationManager()
+    
     def __unicode__(self):
-        return str(self.verb)
+        context = {
+            "sender": self.sender_object,
+            "verb": self.verb,
+            "action":self.action_object,
+            "target": self.target_content_object
+        }
+        if self.target_content_object:
+            if self.action_object:
+                return "%(sender)s %(verb)s with %(action)s"%context
+            return "%(sender)s %(verb)s %(target)s"%context
+        return "%(sender)s %(verb)s "%context
+            
+        
         
 def new_notification(sender,**kwargs):
     # if(recipient is None):

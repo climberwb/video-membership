@@ -34,5 +34,11 @@ urlpatterns +=patterns('accounts.views',
 urlpatterns +=patterns('comments.views',
     url(r'^comments/(?P<id>\d+)$','comment_thread', name='comment_thread'),
     url(r'^comments/create/$','comment_create', name='comment_create')
+)
 
+#Notifications Thread
+urlpatterns +=patterns('notifications.views',
+    url(r'^notifications/$','all', name='notifications_all'),
+    url(r'^notifications/unread/$','all', name='notifications_all'),
+    url(r'^notifications/read/$','all', name='notifications_all'),
 )

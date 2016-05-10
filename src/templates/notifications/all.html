@@ -1,0 +1,12 @@
+{% extends "base.html"%}
+{%block title%} {%endblock%}
+
+
+
+{% block content%}
+    <table class="table">
+        {% for note in notifications %}
+            <tr><td>{{note }}{% if note.read%} Read{%else%} Unread {% endif %}</td><tr>
+        {% endfor %}
+    </table>
+{% endblock%}
