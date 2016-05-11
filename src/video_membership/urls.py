@@ -40,5 +40,7 @@ urlpatterns +=patterns('comments.views',
 urlpatterns +=patterns('notifications.views',
     url(r'^notifications/$','all', name='notifications_all'),
     # url(r'^notifications/unread/(?P<id>\d+)$','unread', name='notifications_unread'),
+    url(r'^notifications/ajax/$','get_notifications_ajax',name='get_notifications_ajax'),
     url(r'^notifications/read/(?P<id>\d+)$','read', name='notifications_read'),
+    
 )

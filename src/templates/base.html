@@ -44,7 +44,8 @@
 
     <div class="container">
 
-       
+          <div id="notifications-loader">
+          </div>
           {% for message in messages %}
               <div class="alert alert-{% if 'error' in message.tags%}warning{%else%}success{%endif%}" role="alert"> {{message.tags}}!:
               {% if 'safe' in message.tags%}{{message|safe}} {%else%}{{message}}{%endif%}
@@ -73,6 +74,32 @@
          {%block jquery%}
          {%endblock%}
      
-   
+    <script>
+      $(document).ready(function(){
+        $(".notification-toggle").click(function(e){
+          e.preventDefault();
+          $.ajax({
+            type:"POST",
+            url:"{%url 'get_notifications_ajax'%}",
+            data: {
+              csrfmiddlewaretoken: "{{csrf_token}}"
+            },
+            success: function(data){
+              $("#notifications-loader").html("<h3>Notifications</h3>")
+              data['notifications'].forEach(function(note){
+                  $("#notifications-loader").append(note+"</br>");
+              });
+              
+              
+            },
+            error: function(rs,e){
+              console.log(rs);
+              console.log(e);
+            }
+            
+          })
+        })
+      });
+    </script>
   </body>
 </html>
