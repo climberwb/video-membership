@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.db import models
 from .signals import notify
 # Create your models here.
@@ -10,12 +11,27 @@ from .signals import notify
 class NotificationQuerySet(models.query.QuerySet):
     def get_user(self,user):
         return self.filter(recipient=user)
+    
+    def mark_targetless(self,recipient):
+        qs = self.unread().get_user(recipient)
+        qs_no_target = qs.filter(target_object_id = None)
+        if qs_no_target:
+            qs_no_target.update(read=True)
+    
+    def mark_all_read(self,recipient):
+        qs = self.unread().get_user(recipient)
+        qs.update(read=True)
+        
+    def mark_all_unread(self,recipient):
+        qs = self.read().get_user(recipient)
+        qs.update(read=False)
+    
     def unread(self):
-        return self.filter(unread=True)
+        return self.filter(read=False)
         
     def read(self):
         return self.filter(read=True)
-        
+    
 
 class NotificationManager(models.Manager):
     def get_queryset(self):
@@ -28,6 +44,7 @@ class NotificationManager(models.Manager):
         return self.get_queryset().get_user(user).read()
     
     def all_for_user(self, user):
+        self.get_queryset().mark_targetless(user)
         return self.get_queryset().get_user(user)
         
 class Notification(models.Model):
@@ -51,20 +68,28 @@ class Notification(models.Model):
     target_content_object = GenericForeignKey("target_content_type","target_object_id")
     
     read = models.BooleanField(default=False)
-    unread = models.BooleanField(default=True)
+
     
     objects = NotificationManager()
     
     def __unicode__(self):
+        try:
+            target_url = self.target_content_object.get_absolute_url()
+        except:
+            target_url = None
         context = {
             "sender": self.sender_object,
             "verb": self.verb,
             "action":self.action_object,
-            "target": self.target_content_object
+            "target": self.target_content_object,
+            "target_url": target_url,
+            "verify_read":reverse("notifications_read",kwargs={"id":self.id})
         }
         if self.target_content_object:
-            if self.action_object:
-                return "%(sender)s %(verb)s with %(action)s"%context
+            if self.action_object and target_url:
+                return "%(sender)s %(verb)s <a href='%(verify_read)s?next=%(target_url)s'> %(target)s </a> with %(action)s"%context
+            if self.action_object and not target_url:
+                return "%(sender)s %(verb)s %(target)s with %(action)s"%context
             return "%(sender)s %(verb)s %(target)s"%context
         return "%(sender)s %(verb)s "%context
             

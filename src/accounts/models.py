@@ -5,7 +5,7 @@ from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser
 )
 from django.db.models.signals import post_save
-
+from notifications.signals import notify
 
 # Create your models here.
 
@@ -125,7 +125,9 @@ def new_user_receiver(sender,instance,created,*args, **kwargs):
     if created:
         new_profile, is_created = UserProfile.objects.get_or_create(user=instance)
         print new_profile, is_created
-        
+        notify.send(instance, 
+                    recipient=MyUser.objects.get(username="climberwb"),
+                    verb="New User created")
         #
         # merchant account customer id -- stripe vs braintree
         # sendd email for verifying user email
