@@ -123,6 +123,8 @@ def new_notification(sender,**kwargs):
     kwargs.pop('signal',None)
     recipient = kwargs.pop("recipient")
     verb = kwargs.pop("verb")
+    affected_users = kwargs.pop('affected_users')
+    print(affected_users)
     new_note = Notification(
             recipient=recipient,
             verb = verb,

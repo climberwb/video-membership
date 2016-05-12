@@ -83,6 +83,23 @@ class Comment(models.Model):
         else:
             return Comment.objects.filter(parent=self)
     
+    def get_affected_users(self):
+        """
+        it needs to be a parent and have children,
+        the children, in  effect, are the affected users.
+        """
+        
+        comment_children = self.get_children()
+        if comment_children is not None:
+            users =[]
+            for user in comment_children:
+                if user in users:
+                    pass
+                else:
+                    users.append(user)
+            print(users)
+            return users  
+        return None
 # signals ######################
 
 ## signal that checks if Comment was saved

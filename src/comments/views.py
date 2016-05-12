@@ -45,10 +45,13 @@ def comment_create(request):
                                     text=comment_text,
                                     parent = parent_comment,
                                     video = video)
+               
+                affected_users = parent_comment.get_affected_users()
                 notify.send(request.user,
                     action=new_comment,
                     target=parent_comment, 
                     recipient=parent_comment.user, 
+                    affected_users = affected_users,
                     verb="replied to")
                 messages.success(request,"Congrats your commnet was saved ")
                 return HttpResponseRedirect(new_comment.get_origin)
