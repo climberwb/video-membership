@@ -77,7 +77,6 @@
     <script>
       $(document).ready(function(){
         $(".notification-toggle").click(function(e){
-          e.preventDefault();
           $.ajax({
             type:"POST",
             url:"{%url 'get_notifications_ajax'%}",
@@ -85,10 +84,18 @@
               csrfmiddlewaretoken: "{{csrf_token}}"
             },
             success: function(data){
-              $("#notifications-loader").html("<h3>Notifications</h3>")
-              data['notifications'].forEach(function(note){
-                  $("#notifications-loader").append(note+"</br>");
-              });
+              console.log('success');
+               $("#notifications-loader ul.notify").remove()
+              $("#notifications-loader").append("<ul class='dropdown-menu notify'></ul>");
+              
+              if(data.notifications.length==0){
+                $("#notifications-loader ul.notify").append("<li><a href='{%url "notifications_all" %}'>" + "Notification" +"</a></li>");
+              }
+              else{
+                data['notifications'].forEach(function(note){
+                    $("#notifications-loader ul.notify").append("<li>"+note+"</li>");
+                });
+              }
               
               
             },

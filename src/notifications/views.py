@@ -29,11 +29,12 @@ def read(request,id):
             return HttpResponseRedirect(reverse("notifications_all"))
     else:
         raise Http404
+        
 @login_required       
 def get_notifications_ajax(request):
     if request.is_ajax() and request.method == "POST":
         notifications = Notification.objects.all_for_user(request.user).recent()
-        notes = [str(note) for note in notifications]
+        notes = [note.get_link for note in notifications]
         data ={
             "notifications":notes
         }

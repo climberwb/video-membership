@@ -73,12 +73,12 @@ class Notification(models.Model):
 
     
     objects = NotificationManager()
-    
-    def __unicode__(self):
+    @property
+    def get_link(self):
         try:
             target_url = self.target_content_object.get_absolute_url()
         except:
-            target_url = None
+            target_url = reverse("notifications_all")
         context = {
             "sender": self.sender_object,
             "verb": self.verb,
@@ -88,12 +88,29 @@ class Notification(models.Model):
             "verify_read":reverse("notifications_read",kwargs={"id":self.id})
         }
         if self.target_content_object:
-            if self.action_object and target_url:
-                return "%(sender)s %(verb)s <a href='%(verify_read)s?next=%(target_url)s'> %(target)s </a> with %(action)s"%context
-            if self.action_object and not target_url:
-                return "%(sender)s %(verb)s %(target)s with %(action)s"%context
-            return "%(sender)s %(verb)s %(target)s"%context
-        return "%(sender)s %(verb)s "%context
+            return "<a href='%(verify_read)s?next=%(target_url)s'>%(sender)s %(verb)s  %(target)s with %(action)s </a> "%context
+        else:
+            return "<a href='%(verify_read)s?next=%(target_url)s'>%(sender)s %(verb)s</a> "%context
+            
+            
+    def __unicode__(self):
+        try:
+            target_url = self.target_content_object.get_absolute_url()
+        except:
+            target_url = reverse("notifications_all")
+        context = {
+            "sender": self.sender_object,
+            "verb": self.verb,
+            "action":self.action_object,
+            "target": self.target_content_object,
+            "target_url": target_url,
+            "verify_read":reverse("notifications_read",kwargs={"id":self.id})
+        }
+        if self.target_content_object:
+            return "<a href='%(verify_read)s?next=%(target_url)s'>%(sender)s %(verb)s  %(target)s with %(action)s </a> "%context
+        else:
+            return "<a href='%(verify_read)s?next=%(target_url)s'>%(sender)s %(verb)s</a> "%context
+            
             
         
         
