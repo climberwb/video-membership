@@ -98,6 +98,7 @@ class Notification(models.Model):
             target_url = self.target_content_object.get_absolute_url()
         except:
             target_url = reverse("notifications_all")
+        print("inside unicode", self.id)
         context = {
             "sender": self.sender_object,
             "verb": self.verb,
@@ -119,26 +120,61 @@ def new_notification(sender,**kwargs):
     #     recipient = 0
     # else:
     #     new_notification_create = Notification.objects.create(recipient=recipient,action=action,)
-    print sender
+   
     kwargs.pop('signal',None)
     recipient = kwargs.pop("recipient")
     verb = kwargs.pop("verb")
-    affected_users = kwargs.pop('affected_users')
-    print(affected_users)
-    new_note = Notification(
-            recipient=recipient,
-            verb = verb,
-            sender_content_type = ContentType.objects.get_for_model(sender),
-            sender_object_id = sender.id
-        )
-    for option in ("target","action"):
-        obj = kwargs.pop(option,None )
-        print('out loop',obj)
-        if obj is not None:
-            setattr(new_note,"%s_content_type"%option, ContentType.objects.get_for_model(obj))
-            setattr(new_note,"%s_object_id"%option, obj.id)
-    new_note.save()
-    print(new_note)
-
+    try:
+        affected_users = kwargs.pop('affected_users')
+    except:
+        affected_users = None
+    if affected_users is not None:
+        for u in affected_users:
+            print("affected_users: ",affected_users, u==sender)
+            if u == sender:
+                pass
+            else:
+                print("u: ", u)
+                print("sender",sender == u,sender.id)
+                new_note = Notification(
+                        recipient=u,
+                        verb = verb,
+                        sender_content_type = ContentType.objects.get_for_model(sender),
+                        sender_object_id = sender.id
+                    )
+                print("before option loop")
+                # print("before option looop", new_note)
+                print("kwargs ", kwargs)
+                for option in ("target","action"):
+                    # obj = kwargs.pop(option,None )
+                    try:
+                        obj = kwargs[option] 
+                    except:
+                        obj = None
+                    if obj is not None:
+                        setattr(new_note,"%s_content_type"%option, ContentType.objects.get_for_model(obj))
+                        setattr(new_note,"%s_object_id"%option, obj.id)
+                print("before new note")
+                # print(new_note)
+                print("passed new_)note")
+                new_note.save()
+                
+    else:
+        print("affected_users is none")
+        new_note = Notification(
+                recipient=recipient,
+                verb = verb,
+                sender_content_type = ContentType.objects.get_for_model(sender),
+                sender_object_id = sender.id
+            )
+        for option in ("target","action"):
+            obj = kwargs.pop(option,None )
+            print('out loop',obj)
+            if obj is not None:
+                setattr(new_note,"%s_content_type"%option, ContentType.objects.get_for_model(obj))
+                setattr(new_note,"%s_object_id"%option, obj.id)
+        new_note.save()
+        print(new_note)
+                
 
 notify.connect(new_notification)

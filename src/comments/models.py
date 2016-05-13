@@ -92,7 +92,9 @@ class Comment(models.Model):
         comment_children = self.get_children()
         if comment_children is not None:
             users =[]
-            for user in comment_children:
+            users.append(self.user)
+            for comment in comment_children:
+                user = comment.user
                 if user in users:
                     pass
                 else:
