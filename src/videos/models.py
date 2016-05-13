@@ -16,6 +16,9 @@ class VideoQueryset(models.query.QuerySet):
         
     def featured(self):
         return self.filter(featured=True)
+    
+    def has_embed(self):
+        return self.filter(embed_code__isnull=False).exclude(embed_code__exact="")
         
 class VideoManager(models.Manager):
     def get_queryset(self):
@@ -25,7 +28,8 @@ class VideoManager(models.Manager):
         return self.get_queryset().active().featured()
         
     def all(self):
-        return self.get_queryset().active()
+        return self.get_queryset().active().has_embed()
+        
 
 
 DEFAULT_MESSAGE = """
@@ -94,12 +98,15 @@ class Category(models.Model):
     # videos = models.ManyToManyField(Video, null=True, blank=True)
     tags = GenericRelation("TaggedItem", null=True,blank=True)
     description = models.TextField(max_length=5000, null=True, blank=True)
-    image = models.ImageField(upload_to="/images", null=True, blank=True)
+    image = models.ImageField(upload_to="images/", null=True, blank=True)
     active = models.BooleanField(default=True)
     featured = models.BooleanField(default=False)
     slug = models.SlugField(default="abc",unique=True)
     timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
+    
+    def get_image_url(self):
+        return "%s%s" % (settings.MEDIA_URL,self.image)
     
     def __unicode__(self):
         return self.title
