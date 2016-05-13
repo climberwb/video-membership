@@ -83,7 +83,7 @@ def video_detail(request,cat_slug,vid_slug):
     
 def category_list(request):
     queryset = Category.objects.all()
-    print(queryset[0].title)
+    
     context = {
         "queryset":queryset
     }
@@ -91,17 +91,17 @@ def category_list(request):
    
 @login_required 
 def category_detail(request,cat_slug):
-    try:
-        cat = Category.objects.get(slug=cat_slug)
-        queryset = cat.video_set.all()
-        context = {
-            "object":cat,
-            "queryset":queryset
-            }
-        ## TODO left at 10:43 
+   # try:
+    cat = Category.objects.get(slug=cat_slug)
+    queryset = cat.video_set.all()
+    context = {
+        "object":cat,
+        "queryset":queryset
+        }
+    ## TODO left at 10:43 
        
-    except:
-        raise Http404
+    #except:
+        # raise Http404
     return render(request, "videos/category_detail.html",context)
         
     

@@ -10,22 +10,31 @@ from django.contrib.contenttypes.models import ContentType
 
 
 
-class VideoQueryset(models.query.QuerySet):
+class MasterVideoQueryset(models.query.QuerySet):
     def active(self):
         return self.filter(active=True)
         
     def featured(self):
         return self.filter(featured=True)
     
-    def has_embed(self):
-        return self.filter(embed_code__isnull=False).exclude(embed_code__exact="")
-        
-class VideoManager(models.Manager):
+   
+
+class MasterVideoManager(models.Manager):
     def get_queryset(self):
-        return VideoQueryset(self.model, using=self._db)
+        return MasterVideoQueryset(self.model, using=self._db)
     
     def get_featured(self):
         return self.get_queryset().active().featured()
+ 
+ 
+   
+class VideoQueryset(MasterVideoQueryset):
+    def has_embed(self):
+        return self.filter(embed_code__isnull=False).exclude(embed_code__exact="")
+        
+class VideoManager(MasterVideoManager):
+    def get_queryset(self):
+        return VideoQueryset(self.model, using=self._db)
         
     def all(self):
         return self.get_queryset().active().has_embed()
@@ -93,6 +102,16 @@ def video_signal_post_save_receiver(sender,instance,created, *args,**kwargs):
 post_save.connect(video_signal_post_save_receiver,sender=Video)
 
 
+# class CategoryQueryset(MasterVideoQueryset):
+#     pass
+        
+class CategoryManager(MasterVideoManager):
+    def get_queryset(self):
+        return MasterVideoQueryset(self.model, using=self._db)
+        
+    def all(self):
+        return self.get_queryset().active()
+
 class Category(models.Model):
     title = models.CharField(max_length=120)
     # videos = models.ManyToManyField(Video, null=True, blank=True)
@@ -105,6 +124,7 @@ class Category(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
     
+    objects = CategoryManager()
     def get_image_url(self):
         return "%s%s" % (settings.MEDIA_URL,self.image)
     
