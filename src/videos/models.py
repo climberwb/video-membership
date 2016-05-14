@@ -8,6 +8,10 @@ from django.utils.text import slugify
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 
+from .utils import get_vid_for_direction
+
+
+
 
 
 class MasterVideoQueryset(models.query.QuerySet):
@@ -79,15 +83,11 @@ class Video(models.Model):
         return urllib2.quote("%s %s" %( self.share_message, full_url))
     
     def get_next_url(self):
-        current_category = self.category
-        videos = current_category.set_all().filter(order__gt=self.order)
-        next_vid = None
-        if len(videos) >=1:
-            try:
-                next_videos[0].get_absolute_url()
-            except IndexError:
-                pass
-        return next_vid
+        return get_vid_for_direction(instance=self, direction="next")
+    def get_previous_url(self):
+        return get_vid_for_direction(instance=self, direction="previous")
+        
+        
 def video_signal_post_save_receiver(sender,instance,created, *args,**kwargs):
     print("signal sent")
     if created:
