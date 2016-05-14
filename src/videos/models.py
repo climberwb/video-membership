@@ -52,6 +52,7 @@ class Video(models.Model):
     share_message = models.TextField(default=DEFAULT_MESSAGE)
     tags = GenericRelation("TaggedItem", null=True,blank=True)
     active = models.BooleanField(default=True)
+    order = models.PositiveIntegerField(default=1)
     featured = models.BooleanField(default=False)
     free_preview = models.BooleanField(default=False)
     category = models.ForeignKey("Category", default=1)
@@ -63,6 +64,7 @@ class Video(models.Model):
     
     class Meta:
         unique_together=('slug','category')
+        ordering = ["order","-timestamp"]
         
     def __unicode__(self):
         return self.title
@@ -75,8 +77,17 @@ class Video(models.Model):
         print(full_url)
         # url_with_message = "%s%s" %( self.share_message(), full_url)
         return urllib2.quote("%s %s" %( self.share_message, full_url))
-
-
+    
+    def get_next_url(self):
+        current_category = self.category
+        videos = current_category.set_all().filter(order__gt=self.order)
+        next_vid = None
+        if len(videos) >=1:
+            try:
+                next_videos[0].get_absolute_url()
+            except IndexError:
+                pass
+        return next_vid
 def video_signal_post_save_receiver(sender,instance,created, *args,**kwargs):
     print("signal sent")
     if created:
@@ -125,6 +136,10 @@ class Category(models.Model):
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
     
     objects = CategoryManager()
+    
+    class Meta:
+        ordering = ["-title","timestamp"]
+    
     def get_image_url(self):
         return "%s%s" % (settings.MEDIA_URL,self.image)
     

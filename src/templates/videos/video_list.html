@@ -6,6 +6,6 @@
 {% block content%}
     {% for item in queryset %}
         {{item}}<br />
-        {{item.get_absolute_url}}
+        {{item.order}} - <a href="{{item.get_absolute_url}}"> item</a><br>
     {% endfor %}
 {% endblock%}
