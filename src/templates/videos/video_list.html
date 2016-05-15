@@ -4,8 +4,11 @@
 
 
 {% block content%}
+<table>
     {% for item in queryset %}
         {{item}}<br />
-        {{item.order}} - <a href="{{item.get_absolute_url}}"> item</a><br>
+        <tr><td>{{item.order}}</td> <td> <a href="{{item.get_absolute_url}}"> item</a></td></tr>
+   
     {% endfor %}
+</table>
 {% endblock%}

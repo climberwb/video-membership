@@ -3,12 +3,36 @@
 
 
 
-{% block content%}
-{% for item in queryset %}
-     
-     {{item.order}} - <a href='{{item.get_absolute_url}}'>{{item.title}}</a><br/>
-         
-    </br>
-{% endfor%}
 
+{% block jumbotron %}
+<div class="jumbotron">
+    <div class="row">
+        <div class="col-sm-6">
+            <h1>{{object.title}} </h1>
+            <img src="{{object.get_image_url}}" />
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content%}
+<div class="col-sm-8 col-sm-offset-2">
+    {% if queryset%}
+    <table class="table">
+        <thead>
+            <th>#</th>
+            <th>Title</th>
+        </thead>
+        {% for item in queryset %}
+            <tr><td>{{item.order}}</td>{%if request.user.is_authenticated or item.has_preview%} <td> <a href="{{item.get_absolute_url}}"> {{item}}</a></td> 
+            {%else%}
+                <td>item</td>
+            {%endif%}</tr>
+       
+        {% endfor %}
+    </table>
+    {% else %}
+    <h3 style="text-align:center">Project is comming soon</h3>
+    {%endif%}
+</div>
 {% endblock%}

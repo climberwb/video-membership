@@ -87,6 +87,9 @@ class Video(models.Model):
     def get_previous_url(self):
         return get_vid_for_direction(instance=self, direction="previous")
         
+    @property   
+    def has_preview(self):
+        return self.free_preview
         
 def video_signal_post_save_receiver(sender,instance,created, *args,**kwargs):
     print("signal sent")

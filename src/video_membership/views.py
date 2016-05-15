@@ -10,30 +10,20 @@ from accounts.models import MyUser
 from videos.models import Video
 
 from .forms import LoginForm
+from accounts.forms import RegistrationForm
+from .forms import LoginForm
 
 
-@login_required(login_url='accounts/login/')
+@login_required(login_url='login/')
 def home(request):
-    form =  RegistrationForm(request.POST or None)
-    if form.is_valid():
-        username = form.cleaned_data['username']
-        email = form.cleaned_data['email']
-        password = form.cleaned_data['password2']
-        MyUser.objects.create_user(username=username, email=email, password=password)
-        return redirect('login')
-    # videos = Video.objects.all()
+    if request.user.is_authenticated():
+        context ={}
+    else:
+        login_form = LoginForm(request.POST or None)
+        register_form =  RegistrationForm(request.POST or None)
+        context = {"register_form":register_form,"login_form":login_form}
     
-    # embeds = ["%s" %(mark_safe(vid.embed_code))for vid in videos]
-        
-    context={
-        "form": form,
-        "action_value":"/",
-        "submit_btn_value":"register"
-    #     "videos":videos,
-    #   "numbers": videos.count(),
-    #   "embeds":embeds
-    }
-    return render(request,"form.html",context)
+    return render(request,"home.html",context)
     
 
 # @login_required(login_url='/enroll/login')

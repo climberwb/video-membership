@@ -15,19 +15,49 @@
 
 {% block content%}
  <h1>HELLO!! {{numbers}}</h1>
- <form method="POST" action=""> {% csrf_token%}
-     {{form.as_p}}
+<div class='col-sm-6'>
+    <div>
+
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#register" aria-controls="home" role="tab" data-toggle="tab">Register</a></li>
+    <li role="presentation"><a href="#login" aria-controls="login" role="tab" data-toggle="tab">Login</a></li>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <h3>Register</h3>
+    <div role="tabpanel" class="tab-pane active" id="register">
+        <form method="POST" action='{% url "register"%}'> {% csrf_token%}
+     {{register_form.as_p}}
      <input class="btn btn-default"type="Submit" value="register">
  </form>
- {% for video in videos %}
-   <h3>{{video.title}} {{forloop.counter}}</h3>
-   {{video.embed_code | safe}}
-   <br/>
-   <a href="{{video.get_absolute_url}}"> {{video.title}} {{video.get_absolute_url}}</a>
-  {% endfor %}
-  
-  <h2>Video Embeds</h2>
-  {% for embed in embeds %}
-      {{embed}}
-  {%endfor%}
+    </div>
+    <div role="tabpanel" class="tab-pane" id="login">
+        <h3>Register</h3>
+    <div role="tabpanel" class="tab-pane active" id="register">
+        <form method="POST" action='{% url "login"%}'> {% csrf_token%}
+             {{login_form.as_p}}
+     <input class="btn btn-default"type="Submit" value="Login">
+ </form>
+    </div>
+
+  </div>
+
+</div>
+</div>
+{% block jumbotron%}
+<div class="jumbotron">
+        <h1 class="display-3">Hello, world!</h1>
+        <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
+        <hr class="m-y-2">
+        <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
+        <p class="lead">
+          <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+        </p>
+      </div>
+{% endblock%}
+
+
+ 
+ 
 {% endblock%}

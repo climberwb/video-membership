@@ -66,6 +66,11 @@
 Share on Twitter
 </a>
 </div>
+{% if object.get_previous_url %}
+    <a href="{{object.get_previous_url}}">Previous</a>
+{% elif object.get_next_url %}
+    <a href="{{object.get_next_url}}">Next</a>
+{% endif %}
 <br/>
 <hr/>
 <div class="row">

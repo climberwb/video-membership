@@ -36,8 +36,9 @@ if settings.DEBUG:
     urlpatterns += patterns('',)+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns +=patterns('accounts.views',
-    url(r'^accounts/login/$', 'auth_login', name='login'),
-    url(r'^accounts/logout/$', 'auth_logout', name='logout'),
+    url(r'^login/$', 'auth_login', name='login'),
+    url(r'^register/$', 'auth_register', name='register'),
+    url(r'^logout/$', 'auth_logout', name='logout'),
 )
 
 #Comment Thread

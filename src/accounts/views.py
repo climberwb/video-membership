@@ -5,7 +5,8 @@ from django.shortcuts import render, HttpResponseRedirect, redirect
 from django.utils.safestring import mark_safe
 
 
-from .forms import LoginForm
+from .forms import LoginForm, RegistrationForm
+
 # Create your views here.
 def auth_logout(request):
     logout(request)
@@ -25,3 +26,20 @@ def auth_login(request):
             return HttpResponseRedirect('/')
     context={"form":form}
     return render(request,"login.html",context)
+
+def auth_register(request):
+    if request.user.is_authenticated():
+        context ={}
+    else:
+        
+        form = RegistrationForm(request.POST  or None)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password2']
+            new_user = MyUser()
+            new_user.username = username
+            email.username = email
+            password = form.cleaned_data['password2']
+        context = {"form":form}
+    return render(request, "accounts/register_form.html",context)
