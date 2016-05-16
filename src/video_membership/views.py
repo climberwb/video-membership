@@ -15,6 +15,12 @@ from .forms import LoginForm
 from analytics.signals import page_view 
 from comments.models import Comment
 
+
+from analytics.models import PageView
+from videos.models import Video
+from django.db.models import Count
+from django.contrib.contenttypes.models import ContentType
+
 # @login_required(login_url='login/')
 def home(request):
     # print request.user.pageview_set.get_videos()
@@ -29,8 +35,31 @@ def home(request):
             if not obj.primary_object in recent_videos:
                 recent_videos.append(obj.primary_object)
         recent_comments = Comment.objects.recent()
+        
+
+
+        #top itmes
+        video_type = ContentType.objects.get_for_model(Video)
+        popular_videos = PageView.objects.filter(primary_content_type=video_type).values("primary_object_id")\
+                                .annotate(the_count=Count("primary_object_id"))\
+                                .order_by("-the_count")[:10]
+        
+        
+        
+        # one item
+        # pageView.objects.filter(primary_content_type=video_type,primary_object_id=6).count()
+        
+        popular_videos_list=[]
+        for item in popular_videos:
+            try:
+                new_video = Video.objects.get(id=item['primary_object_id'])
+                popular_videos_list.append(new_video)
+            except:
+                pass
+        
         context ={"recent_videos":recent_videos,
-                  "recent_comments": recent_comments
+                  "recent_comments": recent_comments,
+                  "popular_videos": popular_videos_list
                     
         }
         template = "home_logged_in.html"

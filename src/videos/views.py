@@ -29,6 +29,13 @@ def category_detail(request,cat_slug):
     page_view.send(request.user,
         page_path=request.get_full_path(),
         primary_obj=cat)
+    popular_videos_list
+    for item in popular_videos_list:
+        try:
+            new_video = Video.objects.get(id=item['primary_object_id'])
+            popular_videos.append(new_video)
+        except:
+            pass
     context = {
         "object":cat,
         "queryset":queryset

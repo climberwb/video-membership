@@ -10,7 +10,21 @@ from django.contrib.contenttypes.models import ContentType
 
 from .utils import get_vid_for_direction
 
+'''
+from analytics.models import PageView
+from videos.models import Video
+from django.db.models import Count
+from django.contrib.contenttypes.models import ContentType
 
+#top itmes
+PageView.objects.filter(primary_content_type=video_type)
+.values("primary_object_id")
+.annotate(the_count=Count("primary_object_id"))
+.order_by("-the_count")
+
+# one item
+pageView.objects.filter(primary_content_type=video_type,primary_object_id=6).count()
+'''
 
 
 
