@@ -1,0 +1,52 @@
+{% extends "base.html"%}
+{%block title%} Welcome! {%endblock%}
+
+{% block style %}
+    <style>
+    body {
+      min-height: 2000px;
+    }
+    
+    .navbar-static-top {
+      margin-bottom: 19px;
+    }
+    </style>
+{% endblock %}
+
+{% block content%}
+ 
+
+
+
+ {% if recent_videos%}
+ <div class="row">
+    <div class="col-sm-4">
+        <h1> Recently Watched</h1>
+        {%for video in recent_videos%}
+           <div> <a href="{{video.get_absolute_url}}">{{video}}</a><br/>
+                 {% if forloop.counter == 1%}
+                 <a href="{{video.get_absolute_url}}"><img src="{{vid.category.get_img_url}}" class="img-responsive" /></a><br/>
+                 {% endif%}
+           </div>
+        
+        {%endfor%}
+  </div>
+
+{% endif%}
+
+{% if recent_comments%}
+ <div class="row">
+    <div class="col-sm-8">
+        <h1> Recent Comments</h1>
+        <table class="table">
+        {%for comment in recent_comments%}
+          
+             <tr><td> {{comment.text |truncatechars:40}}</br> via <small> {{comment.user}}</small> | {{comment.timestamp|timesince}} ago</td><td><a href="{{comment.get_absolute_url}}">View Thread</a></td></tr>
+         
+        {%endfor%}
+         </table>
+  </div>
+
+{% endif%}
+ 
+{% endblock%}

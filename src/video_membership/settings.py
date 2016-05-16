@@ -30,6 +30,8 @@ ALLOWED_HOSTS = []
 FULL_DOMAIN_NAME_LOCAL=" https://video-membership-climberwb.c9users.io"
 # Application definition
 
+RECENT_COMMENT_NUMBER = 10
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',

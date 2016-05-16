@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.conf import settings
 from django.core.urlresolvers import reverse
 
 from django.contrib import messages
@@ -9,10 +10,19 @@ from videos.models import Video
 
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.template.defaultfilters import truncatechars
+from django.utils.text import Truncator
 
 class CommentManager(models.Manager):
     def all(self):
         return super(CommentManager,self).filter(active=True).filter(parent=None)
+        
+    def recent(self):
+        try:
+            limit_to = settings.RECENT_COMMENT_NUMBER
+        except:
+            limit_to = 6
+        return self.get_queryset().filter(active=True).filter(parent=None)[:limit_to]
         
         
 
@@ -77,6 +87,7 @@ class Comment(models.Model):
         else:
             return False
     
+        
     def get_children(self):
         if self.is_child:
             return None
