@@ -7,6 +7,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.utils import timezone
 from django.db import models
+
 from .signals import page_view
 
 # Create your models here.
@@ -15,14 +16,29 @@ class PageView(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
     path = models.CharField(max_length=350)
     count = models.PositiveIntegerField(default=1)
+    
     timestamp = models.DateTimeField(default=timezone.now())
+    
+    primary_content_type = models.ForeignKey(ContentType, related_name='primary_obj', null=True, blank=True)
+    primary_object_id = models.PositiveIntegerField(null=True, blank=True)
+    primary_object = GenericForeignKey("primary_content_type","primary_object_id")
+    
+    secondary_content_type = models.ForeignKey(ContentType, related_name='secondary_obj', null=True, blank=True)
+    secondary_object_id = models.PositiveIntegerField(null=True, blank=True)
+    secondary_object = GenericForeignKey("secondary_content_type","secondary_object_id")
+    
     
     
     
     def __unicode__(self):
         return self.path
 
-def page_view_received(sender,page_path, *args,**kwargs):
+def page_view_received(sender, **kwargs):
+    page_path = kwargs.pop('page_path')
+    signal = kwargs.pop('signal',None)
+    primary_obj = kwargs.pop('primary_obj',None)
+    secondary_obj = kwargs.pop('secondary_obj',None)
+    
     user=sender
     if( not user.is_authenticated()):
         new_page_view, created = PageView.objects.get_or_create(path=page_path,timestamp=timezone.now())
@@ -30,6 +46,14 @@ def page_view_received(sender,page_path, *args,**kwargs):
         new_page_view, created = PageView.objects.get_or_create(path=page_path,user=user,timestamp=timezone.now())
     if not created:
         new_page_view.count +=1
+    if primary_obj:
+        new_page_view.primary_object_id = primary_obj.id
+        new_page_view.primary_content_type = ContentType.objects.get_for_model(primary_obj)
+    if secondary_obj:
+        new_page_view.secondary_object_id = secondary_obj.id
+        new_page_view.secondary_content_type = ContentType.objects.get_for_model(secondary_obj)
+    
+    
     new_page_view.save()
     
    

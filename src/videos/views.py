@@ -4,10 +4,13 @@ from django.shortcuts import render, Http404, get_object_or_404
 from .models import Video,Category, TaggedItem
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.decorators import login_required
+
+from analytics.signals import page_view
 from comments.models import Comment
 from comments.forms import CommentForm
 from .models import Video,Category
-from django.contrib.auth.decorators import login_required
+
 # Create your views here.
 
 
@@ -23,6 +26,9 @@ def category_list(request):
 def category_detail(request,cat_slug):
     cat = get_object_or_404(Category,slug=cat_slug)
     queryset = cat.video_set.all()
+    page_view.send(request.user,
+        page_path=request.get_full_path(),
+        primary_obj=cat)
     context = {
         "object":cat,
         "queryset":queryset
@@ -59,6 +65,11 @@ def video_detail(request,cat_slug,vid_slug):
     cat = get_object_or_404(Category,slug=cat_slug)
     # cat = Category.objects.get(slug=cat_slug)
     obj = get_object_or_404(Video, slug=vid_slug, category=cat)
+    page_view.send(request.user,
+        page_path=request.get_full_path(),
+        primary_obj=obj, 
+        secondary_obj=cat)
+    
     # obj  = Video.objects.get(slug=vid_slug)
     if request.user.is_authenticated() or obj.has_preview:
         comments = Comment.objects.filter(video=obj)
