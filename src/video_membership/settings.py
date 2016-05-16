@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'videos',
     'accounts',
     'comments',
-    'notifications'
+    'notifications',
+    'analytics'
 ]
 
 CRISPY_TEMPLATE_PACK = "bootstrap3"

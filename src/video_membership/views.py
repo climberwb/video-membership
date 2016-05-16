@@ -12,10 +12,13 @@ from videos.models import Video
 from .forms import LoginForm
 from accounts.forms import RegistrationForm
 from .forms import LoginForm
+from analytics.signals import page_view 
 
-
-@login_required(login_url='login/')
+# @login_required(login_url='login/')
 def home(request):
+    page_view.send(
+        request.user,
+        page_path=request.get_full_path())
     if request.user.is_authenticated():
         context ={}
     else:
