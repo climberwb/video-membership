@@ -8,7 +8,34 @@ from django.core.urlresolvers import reverse
 from django.utils import timezone
 from django.db import models
 
+from videos.models import Video, Category
 from .signals import page_view
+    
+
+## Query Managers
+class PageViewQueryset(models.query.QuerySet):
+    def videos(self):
+        content_type = ContentType.objects.get_for_model(Video)
+        return self.filter(primary_content_type=content_type)
+        
+    def categories(self):
+        content_type = ContentType.objects.get_for_model(Category)
+        return self.filter(primary_content_type=content_type)        
+        
+class PageViewManager(models.Manager):
+    def get_queryset(self):
+        return PageViewQueryset(self.model, using=self._db)
+    
+    def get_videos(self):
+        return self.get_queryset().videos()
+        
+    def get_categories(self):
+        return self.get_queryset().categories
+        
+  
+        
+
+
 
 # Create your models here.
 
@@ -27,8 +54,10 @@ class PageView(models.Model):
     secondary_object_id = models.PositiveIntegerField(null=True, blank=True)
     secondary_object = GenericForeignKey("secondary_content_type","secondary_object_id")
     
+    objects = PageViewManager()
     
-    
+    class Meta:
+        ordering = ['-timestamp']
     
     def __unicode__(self):
         return self.path

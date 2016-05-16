@@ -16,11 +16,18 @@ from analytics.signals import page_view
 
 # @login_required(login_url='login/')
 def home(request):
+    # print request.user.pageview_set.get_videos()
     page_view.send(
         request.user,
         page_path=request.get_full_path())
     if request.user.is_authenticated():
-        context ={}
+        page_view_objects = request.user.pageview_set.get_videos()
+
+        recent_videos=[]
+        for  obj in page_view_objects:
+            if not obj.primary_object in recent_videos:
+                recent_videos.append(obj.primary_object)
+        context ={"recent_videos":recent_videos}
     else:
         login_form = LoginForm(request.POST or None)
         register_form =  RegistrationForm(request.POST or None)

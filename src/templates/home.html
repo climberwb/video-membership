@@ -58,6 +58,15 @@
 {% endblock%}
 
 
- 
+ {% if recent_videos%}
+{%for video in recent_videos%}
+   <div> <a href="{{video.get_absolute_url}}">{{video}}</a><br/>
+         <a href="{{video.get_absolute_url}}"><img src="{{vid.category.get_img_url}}" class="img-responsive" /></a><br/>
+   </div>
+{%endfor%}
+
+{% endif%}
  
 {% endblock%}
+
+
