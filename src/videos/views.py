@@ -1,6 +1,6 @@
 
 from django.core.urlresolvers import reverse
-from django.shortcuts import render, Http404, get_object_or_404
+from django.shortcuts import render, Http404, get_object_or_404, HttpResponseRedirect
 from .models import Video,Category, TaggedItem
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
@@ -29,13 +29,7 @@ def category_detail(request,cat_slug):
     page_view.send(request.user,
         page_path=request.get_full_path(),
         primary_obj=cat)
-    popular_videos_list
-    for item in popular_videos_list:
-        try:
-            new_video = Video.objects.get(id=item['primary_object_id'])
-            popular_videos.append(new_video)
-        except:
-            pass
+
     context = {
         "object":cat,
         "queryset":queryset
@@ -78,7 +72,7 @@ def video_detail(request,cat_slug,vid_slug):
         secondary_obj=cat)
     
     # obj  = Video.objects.get(slug=vid_slug)
-    if request.user.is_authenticated() or obj.has_preview:
+    if (request.user.is_authenticated() and request.user.is_member) or obj.has_preview:
         comments = Comment.objects.filter(video=obj)
         content_type = ContentType.objects.get_for_model(obj)
         tags = TaggedItem.objects.filter(content_type=content_type,object_id=obj.id)
@@ -93,8 +87,8 @@ def video_detail(request,cat_slug,vid_slug):
         }
         return render(request, "videos/video_detail.html",context)
     else:
-        next_url = obj.get_absolute_url
-        return httpResponseRediect('%s?next=%s'%(reverse('login'),nex_url))
+        next_url = obj.get_absolute_url()
+        return HttpResponseRedirect('%s?next=%s'%(reverse('login'), next_url))
     
     
 def category_list(request):
